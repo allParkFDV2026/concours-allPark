@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+  
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<title>Défi 5 secondes - allPark</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #07547b;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+}
+
+/* =========================
+   IMAGE PRINCIPALE
+========================= */
+
+#game {
+    position: relative;
+    width: min(100vw, 900px);
+    overflow: hidden;
+}
+
+#background {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+
+/* =========================
+   CHRONOMETRE
+
+   Positionné dans
+   l'écran noir
+========================= */
+
+#timer {
+
+    position: absolute;
+
+    top: 32.8%;
+    left: 20.5%;
+
+    width: 58%;
+
+    z-index: 5;
+
+    text-align: center;
+
+    color: #54ffd2;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size:
+        clamp(36px, 9vw, 75px);
+
+    font-weight: 900;
+
+    font-variant-numeric:
+        tabular-nums;
+
+    text-shadow:
+        0 0 5px #00ffbb,
+        0 0 10px #00ffbb,
+        0 0 20px #00ffbb;
+}
+
+
+/* =========================
+   BOUTON BLEU
+
+   Bouton invisible placé
+   exactement au-dessus
+   du bouton de l'image
+========================= */
+
+#blueButton {
+
+    position: absolute;
+
+    left: 43.1%;
+    top: 55.8%;
+
+    width: 13.5%;
+    aspect-ratio: 1;
+
+    z-index: 10;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+
+    cursor: pointer;
+}
+
+#blueButton:active {
+
+    background:
+        rgba(255,255,255,.20);
+
+}
+
+
+/* =========================
+   RESULTAT
+========================= */
+
+#result {
+
+    display: none;
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    padding: 25px;
+
+    background:
+        rgba(0,35,65,.92);
+
+    align-items: center;
+    justify-content: center;
+}
+
+#result.show {
+    display: flex;
+}
+
+
+/* CARTE RESULTAT */
+
+.resultCard {
+
+    width: min(100%, 520px);
+
+    padding: 32px 22px;
+
+    background: white;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    color: #064779;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.4);
+
+    animation:
+        apparition .25s ease;
+}
+
+@keyframes apparition {
+
+    from {
+        opacity: 0;
+        transform: scale(.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* TITRE */
+
+.resultTitle {
+
+    font-size: 20px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+/* TEMPS FINAL */
+
+#finalTime {
+
+    margin: 15px 0;
+
+    font-size:
+        clamp(50px, 13vw, 78px);
+
+    font-weight: 900;
+
+    color: #075aaa;
+}
+
+
+/* CADEAU */
+
+#prize {
+
+    margin: 20px 0 12px;
+
+    font-size:
+        clamp(27px, 7vw, 40px);
+
+    font-weight: 900;
+}
+
+
+/* MESSAGE */
+
+#message {
+
+    font-size: 18px;
+
+    line-height: 1.4;
+}
+
+
+/* JOUEUR SUIVANT */
+
+#nextPlayer {
+
+    width: 100%;
+
+    min-height: 60px;
+
+    margin-top: 25px;
+
+    border: none;
+
+    border-radius: 35px;
+
+    background: #075aaa;
+
+    color: white;
+
+    font-size: 19px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+#nextPlayer:active {
+    transform: scale(.98);
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div id="game">
+
+    <!-- IMAGE -->
+
+    <img
+        id="background"
+        src="miniclic.png"
+        alt="Défi 5 secondes allPark"
+    >
+
+
+    <!-- CHRONOMETRE -->
+
+    <div id="timer">
+        00:00
+    </div>
+
+
+    <!--
+        ZONE CLIQUABLE INVISIBLE
+        SUR LE BOUTON BLEU
+    -->
+
+    <button
+        id="blueButton"
+        aria-label="Démarrer ou arrêter le chronomètre">
+    </button>
+
+
+    <!-- RESULTAT -->
+
+    <div id="result">
+
+        <div class="resultCard">
+
+            <div class="resultTitle">
+                VOTRE TEMPS
+            </div>
+
+            <div id="finalTime">
+                0,00 s
+            </div>
+
+            <div id="prize"></div>
+
+            <div id="message"></div>
+
+            <button id="nextPlayer">
+                JOUEUR SUIVANT
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const timer =
+    document.getElementById("timer");
+
+const blueButton =
+    document.getElementById("blueButton");
+
+const result =
+    document.getElementById("result");
+
+const finalTime =
+    document.getElementById("finalTime");
+
+const prize =
+    document.getElementById("prize");
+
+const message =
+    document.getElementById("message");
+
+const nextPlayer =
+    document.getElementById("nextPlayer");
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let running = false;
+
+let startTime = 0;
+
+let animation = null;
+
+
+/* =========================
+   AFFICHAGE DU TEMPS
+========================= */
+
+function formatTime(milliseconds) {
+
+    const totalHundredths =
+        Math.floor(milliseconds / 10);
+
+    const seconds =
+        Math.floor(totalHundredths / 100);
+
+    const hundredths =
+        totalHundredths % 100;
+
+    return (
+        String(seconds).padStart(2, "0")
+        +
+        ":"
+        +
+        String(hundredths).padStart(2, "0")
+    );
+}
+
+
+/* =========================
+   CHRONOMETRE EN DIRECT
+========================= */
+
+function updateTimer() {
+
+    if (!running) {
+        return;
+    }
+
+    const elapsed =
+        performance.now() - startTime;
+
+    timer.textContent =
+        formatTime(elapsed);
+
+    animation =
+        requestAnimationFrame(updateTimer);
+}
+
+
+/* =========================
+   BOUTON BLEU
+========================= */
+
+blueButton.addEventListener(
+    "click",
+    function() {
+
+        /* PREMIER APPUI
+           = DEMARRAGE */
+
+        if (!running) {
+
+            running = true;
+
+            startTime =
+                performance.now();
+
+            timer.textContent =
+                "00:00";
+
+            animation =
+                requestAnimationFrame(
+                    updateTimer
+                );
+
+        }
+
+        /* DEUXIEME APPUI
+           = ARRET */
+
+        else {
+
+            const elapsed =
+                performance.now()
+                -
+                startTime;
+
+            running = false;
+
+            cancelAnimationFrame(
+                animation
+            );
+
+            timer.textContent =
+                formatTime(elapsed);
+
+            showResult(elapsed);
+
+        }
+
+    }
+);
+
+
+/* =========================
+   RESULTAT
+========================= */
+
+function showResult(milliseconds) {
+
+    const hundredthsTotal =
+        Math.floor(
+            milliseconds / 10
+        );
+
+    const seconds =
+        hundredthsTotal / 100;
+
+    const displayedTime =
+        seconds
+            .toFixed(2)
+            .replace(".", ",");
+
+    finalTime.textContent =
+        displayedTime + " s";
+
+
+    /* =====================
+       MOINS DE 4,50
+    ===================== */
+
+    if (seconds < 4.50) {
+
+        prize.textContent =
+            "❌ PAS DE LOT";
+
+        message.textContent =
+            "Trop tôt ! Le but est de faire 5 secondes.";
+
+        result
+            .classList
+            .add("show");
+
+        return;
+    }
+
+
+    /* =====================
+       PLUS DE 5,50
+    ===================== */
+
+    if (seconds > 5.50) {
+
+        prize.textContent =
+            "❌ PAS DE LOT";
+
+        message.textContent =
+            "Trop tard ! Le but est de faire 5 secondes.";
+
+        result
+            .classList
+            .add("show");
+
+        return;
+    }
+
+
+    /* =====================
+       ENTRE 4,50 ET 5,50
+       = GAGNANT
+    ===================== */
+
+    const lastDigit =
+        hundredthsTotal % 10;
+
+
+    /* 1 / 2 / 3
+       DECAPSULEUR */
+
+    if (
+        lastDigit === 1 ||
+        lastDigit === 2 ||
+        lastDigit === 3
+    ) {
+
+        prize.textContent =
+            "🎁 DÉCAPSULEUR";
+
+    }
+
+
+    /* 4 / 5
+       JETON CADDIE */
+
+    else if (
+        lastDigit === 4 ||
+        lastDigit === 5
+    ) {
+
+        prize.textContent =
+            "🛒 JETON À CADDIE";
+
+    }
+
+
+    /* 6 / 7
+       STYLO */
+
+    else if (
+        lastDigit === 6 ||
+        lastDigit === 7
+    ) {
+
+        prize.textContent =
+            "🖊️ STYLO";
+
+    }
+
+
+    /* 8 / 9 / 0
+       CHOCOLAT */
+
+    else {
+
+        prize.textContent =
+            "🍫 CHOCOLAT";
+
+    }
+
+
+    message.textContent =
+        "🎉 Bravo ! Vous avez gagné !";
+
+    result
+        .classList
+        .add("show");
+}
+
+
+/* =========================
+   JOUEUR SUIVANT
+========================= */
+
+nextPlayer.addEventListener(
+    "click",
+    function() {
+
+        result
+            .classList
+            .remove("show");
+
+        timer.textContent =
+            "00:00";
+
+        prize.textContent =
+            "";
+
+        message.textContent =
+            "";
+
+        running = false;
+
+        startTime = 0;
+
+        if (animation) {
+
+            cancelAnimationFrame(
+                animation
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
